@@ -171,9 +171,9 @@ deal_starting_cards:
 			j alter_deck_head
 	alter_deck_head: #s3 holds the new head address, need to alter the deck size
 		sw $s3, 4($s1) #the deck
-		lw $s3, 0($s1) #loads the size off the deck										###############################
+		lw $s3, 0($s1) #loads the size off the deck										
 		addi $s3, $s3, -44
-		sw $s3, 0($s1)														###############################
+		sw $s3, 0($s1)														
 		lw $s0, 0($sp)
 		lw $s1, 4($sp)
 		lw $s2, 8($sp)
@@ -270,7 +270,7 @@ check_move:
 		#beq $t5, $t4, illegal_deal_move_error
 		#check if any of the columns are empty
 		move $s3, $s0 #gonna be iterating over the board
-		li $s4, 8												#used to be 9
+		li $s4, 8												
 		li $s5, 0 #keep track of counting how many loops we've done
 		loop_over_board_check_illegal:
 			move $a0, $s3 #board
@@ -451,7 +451,7 @@ clear_full_straight:
 	li $t1, 10
 	blt $s2, $t1, too_small_to_clear #col size < 10
 	move $a0, $s1 #a0 holds the card_list
-	addi $s2, $s2, -1 #											################################
+	addi $s2, $s2, -1 #											
 	move $a1, $s2 #get the last card 
 	jal get_card# get the last card
 	move $s3, $v1 #s3 holds the starting card value
@@ -487,12 +487,12 @@ clear_full_straight:
 		addi $s2, $s2, -1
 		bgez $s2, clear_remaining_cards #if s2 is >= 0, keep getting the next address
 		#s2 = 0, set this ones tail to null
-		#lw $a0, 0($t0)											############# TESTING PURPOSES
+		#lw $a0, 0($t0)											
 		#li $v1, 34
-		#syscall													######
+		#syscall													
 		li $t1, '\0'
 		sw $t1, 4($t0) #sets next pointer to null
-		lw $t1, 0($t0) #load the card value								######################
+		lw $t1, 0($t0) #load the card value								
 		li $t9, 0x00700000
 		blt $t1, $t9, add_offset_and_cry
 		j return_here_after_crying
@@ -553,7 +553,7 @@ deal_move:
 		blt $a1, $t4, add_offset_and_return
 		j return_here_after_offset
 		add_offset_and_return:	
-			li $t1, 0x00110000								########################
+			li $t1, 0x00110000								
 			add $a1, $a1, $t1 #goes from down facing to upfacing
 			sw $a1, 0($s2)
 		return_here_after_offset:
@@ -567,7 +567,7 @@ deal_move:
 		
 		
 		remove_cards_from_deck: #s2 holds the new head of the list
-		lw $s2, 4($s2) #loads the card address #Increment card by one											##################
+		lw $s2, 4($s2) #loads the card address #Increment card by one											
 		sw $s2, 4($s1) #updates the head, essentially removing every other card.... #gotta update the size
 		lw $s2, 0($s1) #grabs the size											
 		addi $s2, $s2, -9 #decrements it by the 9 cards we added
@@ -881,7 +881,7 @@ load_game:
            		#add $t7, $t7, $t4 #1000 + 100 + 10 + 1
 
             		sw $t7, 0($s3) #stores it in the moves[]
-            		#lw $t7, 0($s3) #sanity check												#####################
+            		#lw $t7, 0($s3) #sanity check												
 			#sw $t4, 0($s3) #stores it in the moves[]	
 			addi $s3, $s3, 4 #increment moves[i] to store the next...
 			addi $sp, $sp, 4 #deallocate the stack we made...
@@ -896,7 +896,7 @@ load_game:
 			li $t8, 4
 			mul $t8, $t8, $s5 #col * 4
 			add $a0, $s1, $t8 #gets board[col]
-			lw $a0, 0($a0) #gets the card_list at board[col]						######################
+			lw $a0, 0($a0) #gets the card_list at board[col]						
 			jal init_list
 			li $t8, 8
 			blt $s5, $t8, init_list_board_loop
@@ -906,7 +906,7 @@ load_game:
 		read_board_loop:
 			addi $s5, $s5, 1
 			li $t1, '\n' #character to skip over	
-			addi $sp, $sp, -1 #make space on the stack						#allocate -1
+			addi $sp, $sp, -1 #make space on the stack						
 			move $a0, $s4 #file descriptor
 			move $a1, $sp #where we save the byte
 			li $a2, 1 #1 character at a time
@@ -917,17 +917,17 @@ load_game:
 			beq $t4, $t1, start_new_line_loop
 			li $t5, ' '
 			beq $t5, $t4, read_next_dont_append
-			addi $sp, $sp, 1									#deallocate 1 case 1
+			addi $sp, $sp, 1									
 			#else its a valid pair... load next and jal append card to deck
-			addi $sp, $sp, -1 #make space on the stack						#allocate -1
+			addi $sp, $sp, -1 #make space on the stack						
 			move $a0, $s4 #file descriptor
 			move $a1, $sp #where we save the byte
 			li $a2, 1 #1 character at a time
 			li $v0, 14
 			syscall
 			lb $t5, 0($sp) #grabs what we read and stores it in t5
-			addi $sp, $sp, 1									#deallocate 1
-			addi $sp, $sp, -4									#allocate -4
+			addi $sp, $sp, 1									
+			addi $sp, $sp, -4									
 			#T4 HOLDS number, T5 holds up/down
 			li $t6, 'S'
 			sb $t4, 0($sp) #store number at byte 0
@@ -941,7 +941,7 @@ load_game:
 			add $a0, $t8, $s1 #loads pointer to board[col]
 			lw $a0, 0($a0) #give a0 the proper pointer
 			lw $a1, 0($sp) #load card into a1
-			addi $sp, $sp, 4#deallocate stack							#deallocate 4
+			addi $sp, $sp, 4#deallocate stack							
 			jal append_card
 			j read_board_loop
 			read_next_dont_append:
@@ -950,7 +950,7 @@ load_game:
 				li $a2, 1 #1 character at a time
 				li $v0, 14
 				syscall
-				addi $sp, $sp, 1#deallocate stack						#deallocate 1 case 2
+				addi $sp, $sp, 1#deallocate stack						
 				j read_board_loop
 			start_new_line_loop:
 				addi $sp, $sp, 1
@@ -1016,24 +1016,24 @@ simulate_game:
 		lw $a2, 0($s3) #int[] moves
 		jal check_move
 		bgtz $v0, some_legal_move_found
-				#move $a0, $s1									#############
+				#move $a0, $s1									
 				#lw $a1, 0($s3) #int[] moves
-				#jal print_entire_board									###################
+				#jal print_entire_board									
 		addi $s4, $s4, -1 #decrement number moves remaining by one
 		addi $s3, $s3, 4 #go to next moves[i]
 		j check_moves_loop
 		
 		some_legal_move_found: #move_card(board, deck, move)
-				#move $a0, $s1									#############
+				#move $a0, $s1									
 				#lw $a1, 0($s3) #int[] moves
-				#jal print_entire_board									###################
+				#jal print_entire_board									
 			move $a0, $s1 #board
 			move $a1, $s2 #deck
 			lw $a2, 0($s3) #int[] moves
 			jal move_card
-				#move $a0, $s1									#############
+				#move $a0, $s1									
 				#li $a1, 0 
-				#jal print_entire_board									###################
+				#jal print_entire_board									
 			addi $s5, $s5, 1 #increment number valid moves done
 			addi $s4, $s4, -1 #decrement number moves remaining by one
 			addi $s3, $s3, 4 #go to next moves[i]
